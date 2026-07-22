@@ -1,12 +1,11 @@
 import Navbar from '../../components/Navbar'
 import ProductList from '../product/ProductList'
-import { dummyCart } from '../../data/cartData'
 
-function Home({ loadCart }) {
+function Home() {
     return (
         <>
           <Navbar />
-          <ProductList products={dummyCart} loadCart={loadCart} />
+          <ProductList />
         </>
     )
 }

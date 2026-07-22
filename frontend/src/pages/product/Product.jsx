@@ -27,9 +27,10 @@ function Product({ product }) {
     const handleCart = () => {
         if(quantity === 0) return
         const cartData = {
-            productId: product.id,  //  _id: ObjectId("6878d2e1f4a123456789abcd"),
+            productId: product._id,  //  _id: ObjectId("6878d2e1f4a123456789abcd"),
             quantity: quantity
         }
+
         dispatch(addToCart(cartData))
     }
 

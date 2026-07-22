@@ -9,11 +9,11 @@ const getCarts = asyncHandler(async (req, res) => {
 })
 
 const addToCart = asyncHandler(async (req, res) => {
-    console.log(req.body)
+    
     const { cart } = req.body    // Array of { productId, quantity }
-    console.log(cart)
+    
 
-    if(!cart && !Array.isArray(cart)) {
+    if(!cart || !Array.isArray(cart)) {
         res.status(400)
         throw new Error("Invalid cart data provied")
     }
