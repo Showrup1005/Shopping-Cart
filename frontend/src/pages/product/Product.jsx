@@ -1,37 +1,36 @@
-import { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import { reset, addToCart } from "../../features/carts/cartSlice"
+import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { addToCart } from "../../features/carts/cartSlice"
 import Spinner from "../../components/Spinner"
 
 function Product({ product }) {
 
     const [quantity, setQuantity] = useState(0)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const dispatch = useDispatch()
-    const {isLoading, isSuccess, isError, message} = useSelector(
-        (state) => state.cart
-    )
-
-    useEffect(() => {
-        if(isSuccess || isError) {
-            const timer = setTimeout(() => {
-                dispatch(reset())
-            }, 4000)
-            return () => clearTimeout(timer)
-        }
-    }, [isSuccess, isError, dispatch])
+    
 
     const increment = () => setQuantity((prev) => prev + 1)
     const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0))
 
-    const handleCart = () => {
+    const handleCart = async () => {
         if(quantity === 0) return
         const cartData = {
             productId: product._id,  //  _id: ObjectId("6878d2e1f4a123456789abcd"),
             quantity: quantity
         }
 
-        dispatch(addToCart(cartData))
+        try {
+            setIsSubmitting(true)
+            await dispatch(addToCart(cartData)).unwrap()  // .unwrap() waits for the async thunk to resolve successfully
+            setQuantity(0)
+        } catch(error) {
+            console.log('Failed to add to cart', error)
+        } finally {
+            setIsSubmitting(false)
+        }
+        
     }
 
     return (
@@ -63,19 +62,8 @@ function Product({ product }) {
                             <span className="mx-3 font-weight-bold">{quantity}</span>
                             <button className="btn btn-sm btn-link text-dark font-weight-bold px-3" onClick={increment}>+</button>
                         </div>
-                        { isSuccess && (
-                            <div className="alert alert-success py-1 px-2 text-center small mb-2" role="alert">
-                                    Item added to cart!
-                            </div>
-                        )}
-
-                        { isError && (
-                            <div className="alert alert-danger py-1 px-2 text-center small mb-2" role="alert">
-                                    {message || "Failed to add item to cart"}
-                            </div>
-                        )}
                         <button onClick={handleCart} className="btn btn-success w-100">
-                            { isLoading ? <Spinner /> : 'Add to cart'}
+                            { isSubmitting ? <Spinner/> : "Add to cart" }
                         </button>
                     </div>
                 </div>

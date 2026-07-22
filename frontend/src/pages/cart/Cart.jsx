@@ -5,7 +5,7 @@ function Cart() {
   const { items } = useSelector(
     (state) => state.cart
   )
-  console.log(items)
+  
   return (
     <div className="container py-5">
       {/* Header */}

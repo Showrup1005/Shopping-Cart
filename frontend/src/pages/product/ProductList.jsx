@@ -1,36 +1,46 @@
 import { useEffect } from "react"
 import Product from "./Product"
 import { useSelector, useDispatch } from "react-redux"
-import {reset, getProducts} from '../../features/products/productSlice'
+import {reset as resetProducts , getProducts} from '../../features/products/productSlice'
+import { reset as resetCart } from '../../features/carts/cartSlice'
+import { toast } from 'react-toastify'
 import Spinner from "../../components/Spinner"
 
 function ProductList() {
 
     const dispatch = useDispatch()
-    const { products, isLoading, isError, message } = useSelector(
+    const { products, isLoading } = useSelector(
         (state) => state.product
+    )
+
+    const { isError, isSuccess, message } = useSelector(
+        (state) => state.cart
     )
 
     useEffect(() => {
         dispatch(getProducts())
-        
-        return () => {  
-            dispatch(reset())   // Cleanup on unmount
-        }
+        return () => { dispatch(resetProducts()) }
     }, [dispatch])
 
-    if (isLoading) {
-        return <Spinner />
-    }
+    useEffect(() => {
+        if(isSuccess) {
+            toast.success("Product added to cart successfully")
+            dispatch(resetCart())
+        }
+        if(isError) {
+            toast.error(message || "Product not added to cart")
+            dispatch(resetCart())
+        }
+    }, [dispatch, isError, isSuccess, message])
 
-    if (isError) {
-        return <div className="alert alert-danger text-center mt-4">{message}</div>
+    if(isLoading) {
+        return <Spinner />
     }
 
     return (
         <>
             <section className='products'>
-                { products.length > 0 ? (
+                { products && products.length > 0 ? (
                 <div className='row'>
                     { products.map((product) => {       
                         return <Product key={product._id} product={product} />  
