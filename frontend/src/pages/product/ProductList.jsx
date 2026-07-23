@@ -3,7 +3,6 @@ import Product from "./Product"
 import { useSelector, useDispatch } from "react-redux"
 import {reset as resetProducts , getProducts} from '../../features/products/productSlice'
 import { reset as resetCart } from '../../features/carts/cartSlice'
-import { toast } from 'react-toastify'
 import Spinner from "../../components/Spinner"
 
 function ProductList() {
@@ -13,25 +12,13 @@ function ProductList() {
         (state) => state.product
     )
 
-    const { isError, isSuccess, message } = useSelector(
-        (state) => state.cart
-    )
-
     useEffect(() => {
         dispatch(getProducts())
-        return () => { dispatch(resetProducts()) }
+        return () => { 
+            dispatch(resetProducts()) 
+            dispatch(resetCart())
+        }
     }, [dispatch])
-
-    useEffect(() => {
-        if(isSuccess) {
-            toast.success("Product added to cart successfully")
-            dispatch(resetCart())
-        }
-        if(isError) {
-            toast.error(message || "Product not added to cart")
-            dispatch(resetCart())
-        }
-    }, [dispatch, isError, isSuccess, message])
 
     if(isLoading) {
         return <Spinner />

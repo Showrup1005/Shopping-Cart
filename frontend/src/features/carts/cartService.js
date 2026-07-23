@@ -23,9 +23,20 @@ const getCart = async (token) => {
     return response.data
 }
 
+const updateCart = async (cartData, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.put(API_URL, { cart: Array.isArray(cartData) ? cartData : [cartData] }, config)
+    return response.data
+}
+
 
 const cartService = {
     addToCart,
     getCart,
+    updateCart,
 }
 export default cartService

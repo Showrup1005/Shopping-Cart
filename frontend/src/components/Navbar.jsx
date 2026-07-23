@@ -11,6 +11,11 @@ function Navbar() {
         (state) => state.auth
     )
 
+    const { items: carts } = useSelector(
+        (state) => state.cart
+    )
+
+
     const onLogOut = () => {
         dispatch(logout())
         dispatch(reset())
@@ -44,7 +49,7 @@ function Navbar() {
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <path d="M16 10a4 4 0 0 1-8 0"></path>
                     </svg>
-                    <span className="badge badge-pill badge-danger position-absolute" style={{ top: '-2px', right: '-2px', fontSize: '10px' }}>0</span>
+                    <span className="badge badge-pill badge-danger position-absolute" style={{ top: '-2px', right: '-2px', fontSize: '10px' }}>{carts.length}</span>
                     </Link>
 
                     <div className="d-flex align-items-center">

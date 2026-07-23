@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addToCart } from "../../features/carts/cartSlice"
 import Spinner from "../../components/Spinner"
+import { toast } from 'react-toastify'
 
 function Product({ product }) {
 
@@ -24,8 +25,10 @@ function Product({ product }) {
         try {
             setIsSubmitting(true)
             await dispatch(addToCart(cartData)).unwrap()  // .unwrap() waits for the async thunk to resolve successfully
+            toast.success(`${product.title} added successfully to the cart`)
             setQuantity(0)
         } catch(error) {
+            toast.error("Couldn't add product to cart")
             console.log('Failed to add to cart', error)
         } finally {
             setIsSubmitting(false)
