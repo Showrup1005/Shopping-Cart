@@ -1,12 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { getCart, reset } from '../../features/carts/cartSlice';
+import {createOrder} from '../../features/order/orderSlice'
 import CartCard from './CartCard';
 import Spinner from '../../components/Spinner';
+import { toast } from 'react-toastify';
 
 function Cart() {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { items: carts, isLoading } = useSelector(
     (state) => state.cart
   )
@@ -28,6 +32,23 @@ function Cart() {
 
   if(isLoading) {
     return <Spinner />
+  }
+
+  const handleCheckout = async () => {
+
+    if(cartItems.length === 0) return
+    const orderData = {
+        items: cartItems.map(item => ({
+            product: item.product._id,
+            quantity: item.quantity
+        }))
+    }
+    try {
+      const order = await dispatch(createOrder(orderData)).unwrap();
+      navigate(`/payment/${order._id}`);  // .unwrap() waits for the async thunk to resolve successfully
+    } catch(error) {
+      toast.error("Couldn't update the cart", error)
+    }
   }
   
   return (
@@ -92,7 +113,7 @@ function Cart() {
 
               <button 
                 className="btn btn-dark btn-lg w-100 rounded-pill mb-3"
-                disabled={cartItems.length === 0}
+                disabled={cartItems.length === 0} onClick={handleCheckout}
               >
                 Checkout
               </button>
