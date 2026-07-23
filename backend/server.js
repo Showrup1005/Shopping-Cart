@@ -6,6 +6,13 @@ const connectdb = require('./config/db')
 const {errorHandler} = require('./middlewares/errorMiddleware')
 const stripe = require('./config/stripe');
 connectdb()
+const { stripeWebhook } = require('./controllers/paymentController');
+
+app.post(
+  '/api/payment/webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook
+);
 
 app.use(express.json()) 
 app.use(express.urlencoded({extended: false})) 

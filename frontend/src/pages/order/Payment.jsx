@@ -58,7 +58,7 @@ function Payment() {
               <h2 className="fw-bold mb-4">Payment Method</h2>
 
               {clientSecret ? (
-                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret }}>
                   <CheckoutForm orderId={orderId} />
                 </Elements>
               ) : (

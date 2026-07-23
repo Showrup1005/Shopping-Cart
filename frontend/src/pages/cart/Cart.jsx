@@ -6,6 +6,7 @@ import {createOrder} from '../../features/order/orderSlice'
 import CartCard from './CartCard';
 import Spinner from '../../components/Spinner';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 function Cart() {
 
@@ -60,9 +61,9 @@ function Cart() {
           <p className="text-muted mb-0">{cartItems.length} Items</p>
         </div>
 
-        <button className="btn btn-outline-dark rounded-pill px-4">
+        <Link to='/' className="btn btn-outline-dark rounded-pill px-4">
           Continue Shopping
-        </button>
+        </Link>
       </div>
 
       <div className="row g-4">
@@ -118,9 +119,9 @@ function Cart() {
                 Checkout
               </button>
 
-              <button className="btn btn-outline-dark w-100 rounded-pill">
+              <Link to="/" className="btn btn-outline-dark w-100 rounded-pill">
                 Continue Shopping
-              </button>
+              </Link>
             </div>
           </div>
         </div>

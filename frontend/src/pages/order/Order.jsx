@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getOrders } from "../../features/order/orderSlice"; // Adjust path to your slice
+import Navbar from "../../components/Navbar";
 
 function Order() {
   const dispatch = useDispatch();
@@ -51,7 +52,9 @@ function Order() {
   }
 
   return (
+    
     <div className="container py-5">
+      <Navbar />
       <h2 className="fw-bold mb-4">Order History</h2>
 
       <div className="d-flex flex-column gap-4">

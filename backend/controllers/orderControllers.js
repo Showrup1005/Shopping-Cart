@@ -77,6 +77,7 @@ const createOrder = asyncHandler(async (req, res) => {
         paymentStatus: "Pending",
         orderStatus: "Pending"
     });
+    await Cart.findOneAndDelete({ user: req.user._id })
 
     res.status(201).json(order);
 });
