@@ -10,8 +10,17 @@ function Navbar() {
         (state) => state.auth
     )
 
-    const { items: carts } = useSelector(
-        (state) => state.cart
+    const { items: carts } = useSelector((state) => state.cart)
+
+
+    const cartItems = Array.isArray(carts) 
+        ? carts 
+        : (carts?.items || [])
+
+    // 2. Sum up total quantity (converting to Number to prevent string concatenation)
+    const totalCartCount = cartItems.reduce(
+        (total, item) => total + Number(item.quantity || 1), 
+        0
     )
 
     const onLogOut = () => {
@@ -31,7 +40,7 @@ function Navbar() {
     return (
         <section className="header">
             <nav className="navbar navbar-expand-lg navbar-light bg-light px-4">
-                <Link className="navbar-brand mr-4" to="/">Navbar</Link>
+                <Link className="navbar-brand mr-4" to="/">Shopping Cart</Link>
                 
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -69,7 +78,7 @@ function Navbar() {
                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
                             </svg>
                             <span className="badge badge-pill badge-danger position-absolute" style={{ top: '-2px', right: '-2px', fontSize: '10px' }}>
-                                {user && carts ? carts.length : 0}
+                                { totalCartCount }
                             </span>
                         </Link>
 

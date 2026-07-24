@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const stripe = require('../config/stripe'); // Your stripe instance
+const stripe = require('../config/stripe'); 
 const Order = require('../models/orderModel');
 
 // @desc    Create Stripe Payment Intent

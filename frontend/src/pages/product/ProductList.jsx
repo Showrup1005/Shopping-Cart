@@ -1,8 +1,7 @@
 import { useEffect } from "react"
 import Product from "./Product"
 import { useSelector, useDispatch } from "react-redux"
-import {reset as resetProducts , getProducts} from '../../features/products/productSlice'
-import { getCart, reset as resetCart } from '../../features/carts/cartSlice'
+import { getProducts} from '../../features/products/productSlice'
 import Spinner from "../../components/Spinner"
 
 function ProductList() {
@@ -14,11 +13,6 @@ function ProductList() {
 
     useEffect(() => {
         dispatch(getProducts())
-        dispatch(getCart())
-        return () => { 
-            dispatch(resetProducts()) 
-            dispatch(resetCart())
-        }
     }, [dispatch])
 
     if(isLoading) {

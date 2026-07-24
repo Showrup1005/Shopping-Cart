@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import cartService from "./cartService";
 
+const localCart = JSON.parse(localStorage.getItem('cartItems')) || []
+
 const initialState = {
-    items: [],
+    items: localCart,
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -61,6 +63,29 @@ export const cartSlice = createSlice({
             state.isSuccess = false
             state.message = ''
         },
+        clearCart: (state) => {
+            state.items = []
+            localStorage.removeItem('cartItems')
+        },
+        addLocalItem: (state, action) => {
+            const newItem = action.payload
+            const itemQuantity = Number(newItem.quantity) || 1
+
+            const existingIndex = state.items.findIndex(
+                (item) => (item.product?._id || item.product) === (newItem.product?._id || newItem.product)
+            );
+
+            if (existingIndex >= 0) {
+                const currentQty = Number(state.items[existingIndex].quantity) || 1;
+                state.items[existingIndex].quantity = currentQty + itemQuantity;
+            } else {
+                state.items.push({
+                    ...newItem,
+                    quantity: itemQuantity
+                })
+            }
+            localStorage.setItem('cartItems', JSON.stringify(state.items))
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -106,5 +131,5 @@ export const cartSlice = createSlice({
     }
 })
 
-export const {reset} = cartSlice.actions
+export const {reset, clearCart, addLocalItem} = cartSlice.actions
 export default cartSlice.reducer

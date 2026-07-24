@@ -25,6 +25,7 @@ function LoginUser() {
         if(isError) {
             toast.error(message)
         }
+        
         if(isSuccess) {
             navigate('/')
         }

@@ -3,18 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getOrders } from "../../features/order/orderSlice"; // Adjust path to your slice
 import Navbar from "../../components/Navbar";
+import { clearCart } from "../../features/carts/cartSlice";
 
 function Order() {
   const dispatch = useDispatch();
 
-  // Assuming orders array is stored in state.order.orders
+  
   const { orders = [], isLoading } = useSelector((state) => state.order);
 
   useEffect(() => {
     dispatch(getOrders());
+    dispatch(clearCart())
   }, [dispatch]);
 
-  // Helper for status badge colors
+  
   const getBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "completed":

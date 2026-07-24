@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { addToCart } from "../../features/carts/cartSlice"
-import { getCart } from "../../features/carts/cartSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { addLocalItem, addToCart } from "../../features/carts/cartSlice"
 import Spinner from "../../components/Spinner"
 import { toast } from 'react-toastify'
 
@@ -11,6 +10,9 @@ function Product({ product }) {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const dispatch = useDispatch()
+    const { user } = useSelector(
+        (state) => state.auth
+    )
     
 
     const increment = () => setQuantity((prev) => prev + 1)
@@ -18,15 +20,24 @@ function Product({ product }) {
 
     const handleCart = async () => {
         if(quantity === 0) return
-        const cartData = {
-            productId: product._id,  //  _id: ObjectId("6878d2e1f4a123456789abcd"),
-            quantity: quantity
-        }
 
         try {
             setIsSubmitting(true)
-            await dispatch(addToCart(cartData)).unwrap()  // .unwrap() waits for the async thunk to resolve successfully
-            dispatch(getCart())
+            if(user) {
+                const cartData = {
+                    productId: product._id,  //  _id: ObjectId("6878d2e1f4a123456789abcd"),
+                    quantity: quantity
+                }
+                await dispatch(addToCart(cartData)).unwrap()  // .unwrap() waits for the async thunk to resolve successfully
+            } else {
+                const localCartData = {
+                    product: product, 
+                    quantity: quantity,
+                    price: product.price
+                }
+                dispatch(addLocalItem(localCartData))
+            }
+            
             toast.success(`${product.title} added successfully to the cart`)
             setQuantity(0)
         } catch(error) {
