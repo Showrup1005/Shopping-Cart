@@ -71,6 +71,12 @@ export const cartSlice = createSlice({
             const newItem = action.payload
             const itemQuantity = Number(newItem.quantity) || 1
 
+            if (!Array.isArray(state.items)) {
+                state.items = Array.isArray(state.items?.items) 
+                    ? state.items.items 
+                    : []
+            }
+
             const existingIndex = state.items.findIndex(
                 (item) => (item.product?._id || item.product) === (newItem.product?._id || newItem.product)
             );

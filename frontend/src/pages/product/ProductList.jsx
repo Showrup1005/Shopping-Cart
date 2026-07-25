@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { getProducts} from '../../features/products/productSlice'
 import Spinner from "../../components/Spinner"
 
-function ProductList() {
+function ProductList({ search }) {
 
     const dispatch = useDispatch()
     const { products, isLoading } = useSelector(
@@ -15,6 +15,10 @@ function ProductList() {
         dispatch(getProducts())
     }, [dispatch])
 
+    const productFilter = products.filter((product) => 
+        product.title?.toLowerCase().includes(search.toLowerCase())
+    )
+
     if(isLoading) {
         return <Spinner />
     }
@@ -22,9 +26,9 @@ function ProductList() {
     return (
         <>
             <section className='products'>
-                { products && products.length > 0 ? (
+                { productFilter && productFilter.length > 0 ? (
                 <div className='row'>
-                    { products.map((product) => {       
+                    { productFilter.map((product) => {       
                         return <Product key={product._id} product={product} />  
                     })}
                 </div>

@@ -1,10 +1,22 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useSearchParams } from "react-router-dom"
 import { reset, logout } from '../features/auth/authSlice'
 
 function Navbar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const currentSearch = searchParams.get('search') || ''
+    
+    const updateSearchInput = (e) => {
+        const query = e.target.value
+        if(query.trim()) {
+            setSearchParams({search: query})
+        } else {
+            setSearchParams({})
+        }
+    }
+    
 
     const { user } = useSelector(
         (state) => state.auth
@@ -17,7 +29,6 @@ function Navbar() {
         ? carts 
         : (carts?.items || [])
 
-    // 2. Sum up total quantity (converting to Number to prevent string concatenation)
     const totalCartCount = cartItems.reduce(
         (total, item) => total + Number(item.quantity || 1), 
         0
@@ -47,12 +58,10 @@ function Navbar() {
                 </button>
 
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <form className="form-inline my-2 my-lg-0 w-100 mx-lg-5">
+                    <form className="form-inline my-2 my-lg-0 w-100 mx-lg-5" onSubmit={(e) => e.preventDefault()}>
                         <div className="input-group w-100">
-                            <input className="form-control" type="search" placeholder="Search products..." aria-label="Search" />
-                            <div className="input-group-append">
-                                <button className="btn btn-success" type="submit">Search</button>
-                            </div>
+                            <input className="form-control" type="search" placeholder="Search products..." aria-label="Search"
+                                   value={currentSearch} onChange={updateSearchInput} />
                         </div>
                     </form>
 

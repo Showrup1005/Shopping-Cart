@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Navbar from '../../components/Navbar'
 import ProductList from '../product/ProductList'
 import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { addToCart, clearCart, getCart } from '../../features/carts/cartSlice'
 
 
@@ -10,6 +11,8 @@ function Home() {
         (state) => state.auth
     )
     const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
+    const search = searchParams.get("search") || ""
 
     useEffect(() => {
         const syncGuestCart = async () => {
@@ -37,11 +40,12 @@ function Home() {
         }
         syncGuestCart()
     }, [user, dispatch])
+
     
     return (
         <>
           <Navbar />
-          <ProductList />
+          <ProductList search={search} />
         </>
     )
 }
