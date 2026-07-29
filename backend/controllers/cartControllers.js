@@ -20,7 +20,7 @@ const addToCart = asyncHandler(async (req, res) => {
     
     const { cart } = req.body    // Array of { productId, quantity }
     
-    console.log(cart)
+    // console.log(cart)
     if(!cart || !Array.isArray(cart)) {
         res.status(400)
         throw new Error("Invalid cart data provied")
@@ -57,7 +57,7 @@ const addToCart = asyncHandler(async (req, res) => {
 
     await dbCart.save()
     const newCart = await dbCart.populate('items.product')
-    console.log(newCart)
+    // console.log(newCart)
     res.status(200).json(newCart)
 })
 

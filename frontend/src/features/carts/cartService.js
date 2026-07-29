@@ -8,8 +8,6 @@ const addToCart = async (cartData, token) => {
             Authorization: `Bearer ${token}`
         }
     }
-    const c = { cart: Array.isArray(cartData) ? cartData : [cartData] }
-    console.log(c)
 
     const response = await axios.post(API_URL, { cart: Array.isArray(cartData) ? cartData : [cartData] }, config)
     return response.data
