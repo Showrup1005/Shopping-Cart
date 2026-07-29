@@ -71,7 +71,7 @@ function Cart() {
           {cartItems.length > 0 ? (
             <div className="d-flex flex-column gap-3">
               {cartItems.map((item) => (
-                <CartCard key={item._id || item.product?._id} item={item} />
+                <CartCard key={item._id} item={item} />
               ))}
             </div>
           ) : (

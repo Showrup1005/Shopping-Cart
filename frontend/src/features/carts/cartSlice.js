@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import cartService from "./cartService";
 
 const localCart = JSON.parse(localStorage.getItem('cartItems')) || []
@@ -41,7 +41,6 @@ export const getCart = createAsyncThunk('carts/getCart',
 export const updateCart = createAsyncThunk('carts/updateCart',
     async (cartData, thunkAPI) => {
         try {
-            
             const token = thunkAPI.getState().auth.user.token
             return await cartService.updateCart(cartData, token)
         } catch (error) {
@@ -50,6 +49,19 @@ export const updateCart = createAsyncThunk('carts/updateCart',
             return thunkAPI.rejectWithValue(message)
         }
         
+    }
+)
+
+export const removeFromCart = createAsyncThunk('carts/deleteCart',
+    async (id, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            return await cartService.removeFromCart(id, token)
+        } catch (error) {
+            const message = (error.response && error.response.data 
+                && error.response.data.message) || error.message || error.toString()
+            return thunkAPI.rejectWithValue(message)
+        }
     }
 )
 
@@ -69,16 +81,12 @@ export const cartSlice = createSlice({
         },
         addLocalItem: (state, action) => {
             const newItem = action.payload
+
             const itemQuantity = Number(newItem.quantity) || 1
-
-            if (!Array.isArray(state.items)) {
-                state.items = Array.isArray(state.items?.items) 
-                    ? state.items.items 
-                    : []
-            }
-
+            // console.log("Current State:", current(state))
+            
             const existingIndex = state.items.findIndex(
-                (item) => (item.product?._id || item.product) === (newItem.product?._id || newItem.product)
+                (item) => item.product?._id === newItem.productId 
             );
 
             if (existingIndex >= 0) {
@@ -91,6 +99,8 @@ export const cartSlice = createSlice({
                 })
             }
             localStorage.setItem('cartItems', JSON.stringify(state.items))
+            // const getItems = localStorage.getItem('cartItems')
+            // console.log(getItems)
         },
     },
     extraReducers: (builder) => {
@@ -134,6 +144,19 @@ export const cartSlice = createSlice({
             state.isError = true
             state.message = action.payload
           })
+          .addCase(removeFromCart.pending, (state) => {
+            state.isLoading = true
+         })
+         .addCase(removeFromCart.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.items = state.items.filter((item) => item.id !== action.payload.id)
+         })
+         .addCase(removeFromCart.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+         })
     }
 })
 

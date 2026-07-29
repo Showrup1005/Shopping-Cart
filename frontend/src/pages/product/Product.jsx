@@ -19,7 +19,7 @@ function Product({ product }) {
     const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0))
 
     const handleCart = async () => {
-        if(quantity === 0) return
+        if(quantity === 0) return toast.error("Please increase the quantity from zero")
 
         try {
             setIsSubmitting(true)
@@ -31,10 +31,10 @@ function Product({ product }) {
                 await dispatch(addToCart(cartData)).unwrap()  // .unwrap() waits for the async thunk to resolve successfully
             } else {
                 const localCartData = {
-                    product: product, 
+                    productId: product._id, 
                     quantity: quantity,
-                    price: product.price
                 }
+                // console.log(localCartData)
                 dispatch(addLocalItem(localCartData))
             }
             

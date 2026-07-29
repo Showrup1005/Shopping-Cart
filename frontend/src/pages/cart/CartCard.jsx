@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { updateCart, getCart } from "../../features/carts/cartSlice";
+import { updateCart, getCart, removeFromCart } from "../../features/carts/cartSlice";
 
 function CartCard({ item }) {
 
@@ -11,6 +11,7 @@ function CartCard({ item }) {
     const [quantity, setQuantity] = useState(item.quantity)
     const [isUpdating, setIsUpdating] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         setQuantity(item.quantity)
@@ -53,6 +54,26 @@ function CartCard({ item }) {
             setIsSubmitting(false)
         }
             
+    }
+
+    const handleRemoveItem = async () => {
+        const confirmed = window.confirm(
+        `Are you sure you want to remove "${product.title}" from your cart?`)
+
+        if(!confirmed) return
+        
+        const itemId = item._id
+        
+        try {
+            setIsDeleting(true);
+            await dispatch(removeFromCart(itemId)).unwrap()
+            await dispatch(getCart());
+            toast.success(`${product.title} removed from cart`)
+        } catch (error) {
+            toast.error(error.message || "Couldn't remove item from cart")
+        } finally {
+            setIsDeleting(false)
+        }
     }
 
     return (
@@ -124,6 +145,35 @@ function CartCard({ item }) {
                                 </button>
                             </div>
                         )}
+                    </div>
+                    <div className="col-md-3 text-md-end text-center mt-3 mt-md-0 d-flex flex-md-column justify-content-between align-items-md-end align-items-center">
+
+                        <div>
+                            <small className="text-muted d-block">
+                                Total
+                            </small>
+
+                            <h4 className="fw-bold mb-0">
+                                ${((product.price || 0) * quantity).toFixed(2)}
+                            </h4>
+                        </div>
+
+                        {/* Delete Button */}
+                        <button
+                            type="button"
+                            onClick={handleRemoveItem}
+                            disabled={isDeleting}
+                            className="btn btn-outline-danger btn-sm rounded-circle mt-md-3 ms-auto ms-md-0 p-2"
+                            title="Remove item"
+                            style={{ width: "38px", height: "38px" }}
+                        >
+                            {isDeleting ? (
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            ) : (
+                                <i className="bi bi-trash3"></i>
+                            )}
+                        </button>
+
                     </div>
 
                     {/* Total */}

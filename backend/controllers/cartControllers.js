@@ -20,14 +20,14 @@ const addToCart = asyncHandler(async (req, res) => {
     
     const { cart } = req.body    // Array of { productId, quantity }
     
-
+    console.log(cart)
     if(!cart || !Array.isArray(cart)) {
         res.status(400)
         throw new Error("Invalid cart data provied")
     }
 
     // 1. Find or create the user's permanent database cart
-    const dbCart = await Cart.findOne({user: req.user.id})
+    let dbCart = await Cart.findOne({user: req.user.id})
     if(!dbCart) {
         dbCart = await Cart.create({user: req.user.id, items: []})
     }
@@ -40,6 +40,7 @@ const addToCart = asyncHandler(async (req, res) => {
         const existingIndex = await dbCart.items.findIndex(
             (item) => item.product.toString() === targetProductId
         )
+
 
         if(existingIndex > -1){
             // 4. item already in the db
@@ -56,6 +57,7 @@ const addToCart = asyncHandler(async (req, res) => {
 
     await dbCart.save()
     const newCart = await dbCart.populate('items.product')
+    console.log(newCart)
     res.status(200).json(newCart)
 })
 
@@ -95,8 +97,23 @@ const updateCart = asyncHandler(async (req, res) => {
     }
 })
 
+const deleteCart = asyncHandler(async (req, res) => {
+    const cart = await Cart.findOne({ "items._id": req.params.id })
+    if (!cart) {
+        res.status(404)
+        throw new Error('Cart item not found')
+    }
+
+    // Remove ONLY that specific item from the items array
+    cart.items = cart.items.filter((item) => item._id.toString() !== req.params.id)
+    await cart.save()
+
+    res.status(200).json({ id: req.params.id })
+})
+
 module.exports = {
     getCarts,
     addToCart,
-    updateCart
+    updateCart,
+    deleteCart
 }

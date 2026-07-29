@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = '/api/carts'
+const API_URL = '/api/carts/'
 
 const addToCart = async (cartData, token) => {
     const config = {
@@ -8,7 +8,9 @@ const addToCart = async (cartData, token) => {
             Authorization: `Bearer ${token}`
         }
     }
-    
+    const c = { cart: Array.isArray(cartData) ? cartData : [cartData] }
+    console.log(c)
+
     const response = await axios.post(API_URL, { cart: Array.isArray(cartData) ? cartData : [cartData] }, config)
     return response.data
 }
@@ -33,10 +35,20 @@ const updateCart = async (cartData, token) => {
     return response.data
 }
 
+const removeFromCart = async(id, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.delete(API_URL + id, config)
+    return response.data
+}
 
 const cartService = {
     addToCart,
     getCart,
     updateCart,
+    removeFromCart
 }
 export default cartService

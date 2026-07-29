@@ -87,7 +87,7 @@ export const orderSlice = createSlice({
           .addCase(getOrders.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isSuccess = true;
-            state.orders = action.payload; // 🎯 Save array in orders
+            state.orders = action.payload; // Save array in orders
           })
           .addCase(getOrders.rejected, (state, action) => {
             state.isLoading = false;
@@ -100,7 +100,7 @@ export const orderSlice = createSlice({
           .addCase(getOrder.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isSuccess = true;
-            state.order = action.payload; // 🎯 Save object in order
+            state.order = action.payload; // Save object in order
           })
           .addCase(getOrder.rejected, (state, action) => {
             state.isLoading = false;

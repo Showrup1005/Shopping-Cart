@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getOrders } from "../../features/order/orderSlice"; // Adjust path to your slice
+import { getOrders } from "../../features/order/orderSlice"; 
 import Navbar from "../../components/Navbar";
 import { clearCart } from "../../features/carts/cartSlice";
 

@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, Link, useSearchParams } from "react-router-dom"
 import { reset, logout } from '../features/auth/authSlice'
+import { clearCart } from "../features/carts/cartSlice"
 
 function Navbar() {
     const dispatch = useDispatch()
@@ -37,6 +38,7 @@ function Navbar() {
     const onLogOut = () => {
         dispatch(logout())
         dispatch(reset())
+        dispatch(clearCart())
         navigate('/')
     }
 

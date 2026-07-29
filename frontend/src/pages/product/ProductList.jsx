@@ -33,7 +33,7 @@ function ProductList({ search }) {
                     })}
                 </div>
                 ) : (
-                <h3>You need to add some products</h3>
+                <h3>We don't have that product</h3>
                 )}
             </section>
         </>
